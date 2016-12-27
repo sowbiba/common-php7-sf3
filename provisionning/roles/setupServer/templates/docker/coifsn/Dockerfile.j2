@@ -1,0 +1,51 @@
+FROM php:7.1.0-apache
+
+RUN apt-get update
+
+# install ssh
+RUN apt-get install -y dialog apt-utils openssh-server
+
+# config ssh for easy access
+RUN sed -i 's/^PermitRootLogin/# PermitRootlogin/' /etc/ssh/sshd_config
+RUN echo 'root:root' | chpasswd
+RUN mkdir -p /root/.ssh
+
+# install supervisor
+RUN apt-get install -y supervisor
+RUN mkdir -p /var/run/sshd /var/log/supervisor
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer --version
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql
+
+# Install nodejs and npm
+RUN apt-get update && apt-get install -y \
+   nodejs \
+   npm
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+
+# Add user for deployment - force uid to 1000 as it is the coifsn uid on host (mapping necessary for nice rights sharing)
+RUN useradd --system --uid=1000 -s /bin/bash -m -d /home/coifsn coifsn
+RUN echo 'coifsn:coifsn' | chpasswd
+RUN mkdir -p /home/coifsn/.ssh
+RUN chown -R coifsn:coifsn /home/coifsn/.ssh
+
+# Add vhost for current app
+COPY container_config/vhosts/ /etc/apache2/sites-available/
+RUN for site in /etc/apache2/sites-available/*.conf; do a2ensite $( basename $site); done
+
+# ssh authorized keys
+COPY container_config/authorized_keys {{ basepath }}/{{ docker_user }}/.ssh/authorized_keys
+COPY container_config/authorized_keys /root/.ssh/authorized_keys
+RUN chown {{ docker_user }}:{{ docker_user }} {{ basepath }}/{{ docker_user }}/.ssh/authorized_keys
+
+# supervisor config
+COPY container_config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]
+
+
+EXPOSE 22

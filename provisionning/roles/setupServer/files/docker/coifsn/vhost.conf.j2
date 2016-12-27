@@ -1,0 +1,17 @@
+{% for application in item.applications %}
+<VirtualHost *:80>
+  ServerName {{ application.name }}.dev
+  ServerAlias *.{{ application.name }}.dev
+
+  DocumentRoot {{ basepath }}/{{ docker_user }}/{{ workspacedir }}/{{ application.docroot }}
+  <Directory {{ basepath }}/{{ docker_user }}/{{ workspacedir }}/{{ application.docroot }}>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride All
+    Require all granted
+  </Directory>
+
+  ErrorLog /var/log/apache2/{{ application.name }}.error.log
+  CustomLog /var/log/apache2/{{ application.name }}.access.log combined
+
+</VirtualHost>
+{% endfor %}

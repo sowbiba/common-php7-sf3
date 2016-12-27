@@ -1,0 +1,21 @@
+basepath:            /home
+basedir:             "{{ basepath }}/{{ ansible_ssh_user }}"
+docker_containerdir: "docker"
+workspacedir:        "workspace"
+
+# Dev mode => disable the revert and update of repository, to avoid overwrite of the local modifications
+# => if dev mode, the git has to be done manually
+dev_mode: True
+
+domains: [ "dev" ]
+
+# docker containers to build, comment out the unnecessary ones
+containers:
+  - {
+      image: 'coifsn',
+      web_port: "8199",
+      ssh_port: "22099",
+      applications: [
+        { name: 'coifsn',        subdomain: 'coifsn',       docroot: 'coifsn/common-php7-sf3/web' }
+      ]
+    }

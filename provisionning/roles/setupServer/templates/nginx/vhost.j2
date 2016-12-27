@@ -1,0 +1,28 @@
+{% for application in item.applications %}
+server {
+    root /usr/share/nginx/html;
+    index index.php index.html index.htm;
+
+    # Make site accessible from http://localhost/
+    server_name {{ application.name }}.dev *.{{ application.name }}.dev;
+
+    access_log {{ basepath }}/{{ ansible_ssh_user }}/logs/{{ item.image }}.nginx_access.{{ application.name }}.log;
+    error_log  {{ basepath }}/{{ ansible_ssh_user }}/logs/{{ item.image }}.nginx_error.{{ application.name }}.log;
+
+    location / {
+
+        # set client body size to 50M #
+        client_max_body_size 50M;
+
+        # First attempt to serve request as file, then
+        # as directory, then fall back to displaying a 404.
+        # try_files $uri $uri/ =404;
+        # Uncomment to enable naxsi on this location
+        # include /etc/nginx/naxsi.rules
+        proxy_pass  http://localhost:{{ item.web_port }};
+        proxy_set_header Host            $http_host;
+        proxy_set_header X-Real-IP       $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+{% endfor %}

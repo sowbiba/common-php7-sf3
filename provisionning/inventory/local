@@ -1,0 +1,2 @@
+[local]
+coifsn_local          ansible_ssh_host=localhost    ansible_connection=local

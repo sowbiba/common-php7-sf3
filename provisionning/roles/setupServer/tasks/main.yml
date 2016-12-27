@@ -1,0 +1,132 @@
+  - name: install useful system tools
+    apt: pkg={{ item }} state=present
+    sudo: true
+    with_items:
+    - bzip2
+    - cronolog
+    - curl
+    - gzip
+    - htop
+    - linuxlogo
+    - ntp
+    - screen
+    - tree              # directory tree
+    - vim
+    - xclip
+    - xtail
+    - zsh
+    - python
+    - python-pip
+    - apt-transport-https
+    - nginx
+    - apparmor
+
+  - name: Add docker repository key
+    apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=36A1D7869245C8950F966E92D8576A8BA88D21E9 state=present
+
+  - name: Add docker repository
+    apt_repository: repo='deb https://get.docker.io/ubuntu docker main' state=present
+
+  - name: install Docker
+    apt: pkg=lxc-docker state=present
+
+  - name: Install python libs via pip
+    pip: name=docker-py version=1.2.3
+
+  - name: Check docker config
+    shell: grep devicemapper /etc/default/docker
+    register: docker_grep
+    ignore_errors: yes
+
+  - name: Docker default options
+    shell: sed -i 's/#DOCKER_OPTS=.*/DOCKER_OPTS="--storage-driver=devicemapper --storage-opt dm.override_udev_sync_check=true"/' /etc/default/docker
+    # Only when the config file did not contain the devicemapper config => because restart the daemon stops all running containers !
+    when: docker_grep.rc == 1
+    notify:
+      - restart docker
+
+  - name: Create one docker context directory by image to deploy
+    file: path={{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }} owner={{ ansible_ssh_user }} group="www-data" mode=0777 state=directory
+    with_items: containers
+
+  - name: Copy Dockerfile (container build config)
+    template: src=docker/{{ item.image }}/Dockerfile.j2 dest={{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }}/Dockerfile owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} mode=0644
+    with_items: containers
+
+  - name: Copy static config files
+    copy: src=docker/{{ item.image }}/ dest={{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }}/container_config owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} mode=0644
+    with_items: containers
+
+  - name: Copy developpers keys
+    copy: src=ssh/keys dest={{ basepath }}/{{ ansible_ssh_user }}/.ssh/ mode=0700 owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+
+  - name: Add developpers public keys
+    assemble: src={{ basepath }}/{{ ansible_ssh_user }}/.ssh/keys dest={{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }}/container_config/authorized_keys mode=0700 owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+    with_items: containers
+
+  - name: create local directories for vhosts configs
+    file: path={{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }}/container_config/vhosts owner={{ ansible_ssh_user }} group="www-data" mode=0777 state=directory
+    with_items: containers
+
+#  - name: create workspace directory
+#    file: path={{ item }} state=directory group={{ ansible_ssh_user }} owner={{ ansible_ssh_user }}
+#    with_items:
+#      - "{{ basedir }}/{{ workspacedir }}"
+
+  - name: Copy container vhost config files
+    template: src=docker/{{ item.image }}/vhost.conf.j2 dest={{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }}/container_config/vhosts/{{ item.image }}.conf owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} mode=0644
+    with_items: containers
+
+  - name: create local directories for supervisor configs
+    file: path={{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }}/container_config/supervisor owner={{ ansible_ssh_user }} group="www-data" mode=0777 state=directory
+    with_items: containers
+
+  - name: Copy supervisord.conf (container config)
+    template: src=docker/{{ item.image }}/supervisord.conf.j2 dest={{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }}/container_config/supervisor/supervisord.conf owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} mode=0644
+    with_items: containers
+
+  - name: Stop docker image
+    docker: image="{{ item.image }}" name="{{ ansible_ssh_user }}_{{ item.image }}" state=absent
+    with_items: containers
+
+  - name: Check or build docker image
+    docker_image: path="{{ basepath }}/{{ ansible_ssh_user }}/{{ item.image }}/" name="{{ ansible_ssh_user }}_{{ item.image }}" state=build
+    with_items: containers
+
+  - name: Run docker image
+#    docker: image="{{ ansible_ssh_user }}" ports={{ docker_web_port }}:80,{{ docker_ssh_port }}:22 volumes="{{ basepath }}/{{ ansible_ssh_user }}/medias_union:/home/profideo/medias:rw {{ basepath }}/{{ ansible_ssh_user }}/logs:/var/log/apache2:rw" hostname="{{ ansible_ssh_user }}" dns="192.168.0.50" state=running
+    docker: image="{{ ansible_ssh_user }}_{{ item.image }}" name="{{ ansible_ssh_user }}_{{ item.image }}" ports={{ item.web_port }}:80,{{ item.ssh_port }}:22 volumes="{{ basepath }}/{{ ansible_ssh_user }}/{{ workspacedir }}:{{ basepath }}/{{ docker_user }}/{{ workspacedir }}:rw" hostname="{{ ansible_ssh_user }}_{{ item.image }}" state=running
+    with_items: containers
+
+  - name: Create usefull directories if not exists
+    file: path={{ basepath }}/{{ ansible_ssh_user }}/{{ item }} state=directory owner={{ ansible_ssh_user }} group={{ default_group }} mode=0774
+    with_items:
+      - logs
+      - bin
+#
+#  - name: Fix right on home folder
+#    file: path={{ basepath }}/{{ ansible_ssh_user }} state=directory owner={{ ansible_ssh_user }} recurse=yes
+
+  - name: Remove nginx server config
+    shell: rm {{ item }}/{{ ansible_ssh_user }}*
+    ignore_errors: yes
+    sudo: true
+    with_items:
+      - /etc/nginx/sites-available
+      - /etc/nginx/sites-enabled
+
+  - name: Create nginx server config
+    template: src=nginx/vhost.j2 dest=/etc/nginx/sites-available/{{ ansible_ssh_user }}_{{ item.image }} owner=root group=root mode=0644
+    sudo: true
+    with_items: containers
+
+  - name: Enable sites
+    file: src=/etc/nginx/sites-available/{{ ansible_ssh_user }}_{{ item.image }} dest=/etc/nginx/sites-enabled/{{ ansible_ssh_user }}_{{ item.image }} owner=root group=root mode=0644 state=link
+    sudo: true
+    with_items: containers
+    notify:
+      - restart nginx
+
+  - name: create/fix directories
+    file: path={{ basepath }}/{{ ansible_ssh_user }}/logs/ owner={{ ansible_ssh_user }} mode=0774 recurse=yes state=directory
+

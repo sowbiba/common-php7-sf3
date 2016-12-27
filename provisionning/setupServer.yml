@@ -1,0 +1,11 @@
+---
+- name: System - Setup server
+  hosts: local
+  serial: 1
+  sudo: "{{ sudo }}"
+  vars_files:
+  - vars/host/{{ inventory }}.yml
+  - vars/app_instance/{{ inventory }}.yml
+
+  roles:
+    - setupServer

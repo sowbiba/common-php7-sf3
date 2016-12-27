@@ -1,0 +1,4 @@
+basepath:                /home
+default_group:           www-data
+homedir:                 "{{ basepath }}/{{ ansible_ssh_user }}"
+docker_user:             coifsn
