@@ -15,6 +15,7 @@ containers:
       image: 'coifsn',
       web_port: "8199",
       ssh_port: "22099",
+      hosts: [ 'phpmyadmin.dev' ],
       applications: [
         { name: 'coifsn',        subdomain: 'coifsn',       docroot: 'coifsn/common-php7-sf3/web' }
       ]

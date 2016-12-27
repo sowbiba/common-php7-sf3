@@ -1,0 +1,1 @@
+setfacl -R -m u:www-data:rwX -m u:www-data:rwX var/cache && setfacl -R -m u:www-data:rwX -m u:www-data:rwX var/logs && setfacl -R -m u:www-data:rwX -m u:www-data:rwX var/sessions

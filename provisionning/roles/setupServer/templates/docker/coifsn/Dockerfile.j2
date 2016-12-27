@@ -3,7 +3,7 @@ FROM php:7.1.0-apache
 RUN apt-get update
 
 # install ssh
-RUN apt-get install -y dialog apt-utils openssh-server
+RUN apt-get install -y dialog apt-utils openssh-server mysql-client git
 
 # config ssh for easy access
 RUN sed -i 's/^PermitRootLogin/# PermitRootlogin/' /etc/ssh/sshd_config

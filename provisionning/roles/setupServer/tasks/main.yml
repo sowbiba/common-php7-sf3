@@ -95,7 +95,8 @@
 
   - name: Run docker image
 #    docker: image="{{ ansible_ssh_user }}" ports={{ docker_web_port }}:80,{{ docker_ssh_port }}:22 volumes="{{ basepath }}/{{ ansible_ssh_user }}/medias_union:/home/profideo/medias:rw {{ basepath }}/{{ ansible_ssh_user }}/logs:/var/log/apache2:rw" hostname="{{ ansible_ssh_user }}" dns="192.168.0.50" state=running
-    docker: image="{{ ansible_ssh_user }}_{{ item.image }}" name="{{ ansible_ssh_user }}_{{ item.image }}" ports={{ item.web_port }}:80,{{ item.ssh_port }}:22 volumes="{{ basepath }}/{{ ansible_ssh_user }}/{{ workspacedir }}:{{ basepath }}/{{ docker_user }}/{{ workspacedir }}:rw" hostname="{{ ansible_ssh_user }}_{{ item.image }}" state=running
+    shell: docker run {% for host in item.hosts %}--add-host {{ host }}:{{ ansible_eth0.ipv4.address }} {% endfor %} -v {{ basepath }}/{{ ansible_ssh_user }}/{{ workspacedir }}:{{ basepath }}/{{ docker_user }}/{{ workspacedir }}:rw -p {{ item.web_port }}:80 -p {{ item.ssh_port }}:22 -h {{ ansible_ssh_user }}_{{ item.image }} --name={{ ansible_ssh_user }}_{{ item.image }} -d {{ ansible_ssh_user }}_{{ item.image }}
+    #docker: image="{{ ansible_ssh_user }}_{{ item.image }}" name="{{ ansible_ssh_user }}_{{ item.image }}" ports={{ item.web_port }}:80,{{ item.ssh_port }}:22 volumes="{{ basepath }}/{{ ansible_ssh_user }}/{{ workspacedir }}:{{ basepath }}/{{ docker_user }}/{{ workspacedir }}:rw" hostname="{{ ansible_ssh_user }}_{{ item.image }}" state=running
     with_items: containers
 
   - name: Create usefull directories if not exists
