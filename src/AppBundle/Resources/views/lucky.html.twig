@@ -1,0 +1,52 @@
+{% extends "AppBundle::layout.html.twig" %}
+
+{% block content %}
+    <div id="fb-root"></div>
+    <script type="text/javascript">
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '543508325854280',
+                xfbml      : true,
+                version    : 'v2.8'
+            });
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        function fb_login() {
+            FB.getLoginStatus(function(response) {
+                if (response.status === 'connected') {
+                    // connected
+                    alert('Already connected, redirect to login page to create token.');
+                    document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                } else {
+                    // not_authorized
+                    FB.login(function(response) {
+                        if (response.authResponse) {
+                            document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                        } else {
+                            alert('Cancelled.');
+                        }
+                    }, {scope: 'email'});
+                }
+            });
+        }
+    </script>
+
+    <h1 class="title">Hello!</h1>
+
+    {#<a href="{{ path('_demo_secured_hello_admin', { 'name': name }) }}">Hello resource secured for <strong>admin</strong> only.</a>#}
+
+    <p>
+        <a href="#" onclick="fb_login();">Facebook Connect Button (Dialog)</a>
+    </p>
+
+    {# Bonus: Show all available login link in HWIOAuthBundle #}
+    {#{% render(controller('HWIOAuthBundle:Connect:connect')) %}#}
+{% endblock content %}

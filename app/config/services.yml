@@ -7,3 +7,12 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+#    oauth_aware.user_provider.service:
+#        class: HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider
+
+    security.login_handler:
+        class: AppBundle\Security\Handler\LoginSuccessHandler
+
+    hwi_oauth.user.provider.entity:
+        class: HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider

@@ -4,15 +4,16 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 
 class LuckyController extends Controller
 {
     /**
-     * @Route("/lucky/number", name="homepage")
+     * @Route("/", name="homepage")
+     * @Template()
      */
-    public function numberAction()
+    public function luckyAction()
     {
         $number = mt_rand(0, 100);
 

@@ -64,12 +64,24 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
-fos_oauth_server:
-    db_driver: orm       # Drivers available: orm, mongodb, or propel
-    client_class:        FOS\OAuthServerBundle\Propel\Client
-    access_token_class:  FOS\OAuthServerBundle\Propel\AccessToken
-    refresh_token_class: FOS\OAuthServerBundle\Propel\RefreshToken
-    auth_code_class:     FOS\OAuthServerBundle\Propel\AuthCode
+#fos_oauth_server:
+#    db_driver: orm       # Drivers available: orm, mongodb, or propel
+#    client_class:        FOS\OAuthServerBundle\Propel\Client
+#    access_token_class:  FOS\OAuthServerBundle\Propel\AccessToken
+#    refresh_token_class: FOS\OAuthServerBundle\Propel\RefreshToken
+#    auth_code_class:     FOS\OAuthServerBundle\Propel\AuthCode
+
+hwi_oauth:
+    # list of names of the firewalls in which this bundle is active, this setting MUST be set
+    firewall_names: [secured_area]
+    resource_owners:
+        facebook:
+            type:                facebook
+            client_id:           543508325854280
+            client_secret:       8d22fb87a8a8f13e35da6076bcd7e3d5
+            scope:         "email"
+            options:
+                display: popup #dialog is optimized for popup window
 
 # Swiftmailer Configuration
 swiftmailer:
