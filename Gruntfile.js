@@ -16,6 +16,10 @@ module.exports = function(grunt) {
                     ],
                     'web/.tmp/css/bootstrap.css': [
                         'app/Resources/lib/bootstrap/less/bootstrap.less'
+                    ],
+                    'web/.tmp/css/main.css': [
+                        'src/**/Resources/less/*.less',
+                        'src/**/Resources/less/**/*.less'
                     ]
                 }
             }
@@ -32,6 +36,9 @@ module.exports = function(grunt) {
                     ],
                     'web/css/vendor/fontawesome.min.css': [
                         'web/.tmp/css/fontawesome.css'
+                    ],
+                    'web/css/app/main.min.css': [
+                        'web/.tmp/css/main.css'
                     ]
                 }
             }
@@ -44,7 +51,9 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    // Config.yml
+                    'web/js/vendor/jquery.js': [
+                        'app/Resources/lib/jquery/dist/jquery.js'
+                    ],
                     'web/js/vendor/bootstrap.js': [
                         'app/Resources/lib/bootstrap/js/transition.js',
                         'app/Resources/lib/bootstrap/js/alert.js',
@@ -58,15 +67,6 @@ module.exports = function(grunt) {
                         'app/Resources/lib/bootstrap/js/scroolspy.js',
                         'app/Resources/lib/bootstrap/js/tab.js',
                         'app/Resources/lib/bootstrap/js/affix.js'
-                    ],
-                    'web/js/vendor/jquery.js': [
-                        'app/Resources/lib/jquery/dist/jquery.js'
-                    ],
-                    'web/js/vendor/jquery-ui/draggable.js': [
-                        'app/Resources/lib/jquery-ui/ui/core.js',
-                        'app/Resources/lib/jquery-ui/ui/widget.js',
-                        'app/Resources/lib/jquery-ui/ui/mouse.js',
-                        'app/Resources/lib/jquery-ui/ui/draggable.js'
                     ],
                     'web/js/app/main.js': [
                         'src/AppBundle/Resources/public/javascripts/app.js'
@@ -103,6 +103,7 @@ module.exports = function(grunt) {
         watch: {
             css: {
                 files: [
+                    'src/**/Resources/less/*.less',
                     'src/**/Resources/less/**/*.less'
                 ],
                 tasks: ['css']
@@ -119,7 +120,9 @@ module.exports = function(grunt) {
         concat: {
             js: {
                 src: [
-                    'web/js/vendor/*.js', // tous les JS dans libs
+                    'web/js/vendor/jquery.js',
+                    'web/js/vendor/bootstrap.js',
+                    'web/js/vendor/**/*.js',
                     'web/js/app/*.js' // tous nos JS
                 ],
                 dest: 'web/js/all.js'
@@ -135,8 +138,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', ['css', 'javascript', 'copy', 'shell', 'concat' ]);
-    grunt.registerTask('javascript', ['uglify', 'concat']);
-    grunt.registerTask('css', ['less','cssmin', 'concat']);
+    grunt.registerTask('javascript', ['uglify','concat']);
+    grunt.registerTask('css', ['less','cssmin','concat']);
     grunt.registerTask('cp', ['copy']);
     grunt.registerTask('sh', ['shell'])
 };

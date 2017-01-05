@@ -1,38 +1,38 @@
-{% extends "TwigBundle::layout.html.twig" %}
+{% extends "::base.html.twig" %}
 
-{% block head %}
-    <link rel="icon" sizes="16x16" href="{{ asset('favicon.ico') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/acmedemo/css/demo.css') }}" />
-{% endblock %}
-
-{% block title 'Demo Bundle' %}
-
-{% block body %}
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="flash-message">
-            <em>Notice</em>: {{ flashMessage }}
+{# http://www.comfychairconsulting.com/ #}
+{% block banner %}
+    <div class="col-xs-4 pull-right">
+        <div class="col-xs-6 header-text">
+            <p>
+                toto<br />
+                est<br />
+                là, mec<br />
+            </p>
         </div>
-    {% endfor %}
-
-    {% block content_header %}
-        <ul id="menu">
-            {#{% block content_header_more %}#}
-                {#<li><a href="{{ path('_demo') }}">Demo Home</a></li>#}
-                {#<li>logged in as <strong>{{ app.user ? app.user.username : 'Anonymous' }}</strong> - <a href="{{ path('_demo_logout') }}">Logout</a></li>#}
-            {#{% endblock %}#}
-        </ul>
-
-        <div style="clear: both"></div>
-    {% endblock %}
-
-    <div class="block">
-        {% block content %}{% endblock %}
+        <div class="col-xs-6 banner">
+            <ul class="contact-links contact-links-site">
+                <li class="icon-email">
+                    <a href="mailto:info@comfychairconsulting.com" target="_blank" title="Email: Comfy Chair Consulting Inc.">
+                        <i class="fa fa-envelope"></i>
+                    </a>
+                </li>
+                <li class="icon-facebook">
+                    <a href="https://www.facebook.com/comfychairconsulting" target="_blank" title="Facebook: Comfy Chair Consulting Inc.">
+                        <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+                <li class="icon-linkedin">
+                    <a href="https://www.linkedin.com/company/comfy-chair-consulting" target="_blank" title="LinkedIn: Comfy Chair Consulting Inc.">
+                        <i class="fa fa-linkedin"></i>
+                    </a>
+                </li>
+                <li class="icon-twitter">
+                    <a href="https://twitter.com/comfychairdev" target="_blank" title="Twitter: Comfy Chair Consulting Inc.">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-
-    {% if code is defined %}
-        <h2>Code behind this page</h2>
-        <div class="block">
-            <div class="symfony-content">{{ code|raw }}</div>
-        </div>
-    {% endif %}
-{% endblock %}
+{% endblock banner %}

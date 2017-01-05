@@ -45,7 +45,9 @@ security:
         - { path: ^/login,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/connect, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
-        - { path: ^/,        roles: [ IS_AUTHENTICATED_REMEMBERED ] }
+        - { path: ^/,        roles: [ IS_AUTHENTICATED_ANONYMOUSLY ] }
+
+        - { path: ^/secure,        roles: [ IS_AUTHENTICATED_FULLY ] }
 
 
 #        oauth_token:

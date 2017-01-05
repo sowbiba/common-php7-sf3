@@ -28,9 +28,9 @@ class SecurityRefreshToken extends BaseRefreshToken
      */
     protected $client;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User")
-     */
+//    /**
+//     * @ORM\ManyToOne(targetEntity="User")
+//     */
     protected $user;
 
 
@@ -51,7 +51,7 @@ class SecurityRefreshToken extends BaseRefreshToken
      *
      * @return SecurityRefreshToken
      */
-    public function setClient($client)
+    public function xsetClient($client)
     {
         $this->client = $client;
 
@@ -75,7 +75,7 @@ class SecurityRefreshToken extends BaseRefreshToken
      *
      * @return SecurityRefreshToken
      */
-    public function setUser($user)
+    public function xsetUser($user)
     {
         $this->user = $user;
 

@@ -28,9 +28,9 @@ class SecurityAuthCode extends BaseAuthCode
      */
     protected $client;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User")
-     */
+//    /**
+//     * @ORM\ManyToOne(targetEntity="User")
+//     */
     protected $user;
 
 
@@ -51,7 +51,7 @@ class SecurityAuthCode extends BaseAuthCode
      *
      * @return SecurityAuthCode
      */
-    public function setClient($client)
+    public function xsetClient($client)
     {
         $this->client = $client;
 
@@ -75,7 +75,7 @@ class SecurityAuthCode extends BaseAuthCode
      *
      * @return SecurityAuthCode
      */
-    public function setUser($user)
+    public function xsetUser($user)
     {
         $this->user = $user;
 

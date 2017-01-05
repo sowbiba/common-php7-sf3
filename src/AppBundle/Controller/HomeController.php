@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: isow
+ * Date: 05/01/17
+ * Time: 15:03
+ */
 
 namespace AppBundle\Controller;
 
@@ -7,18 +13,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 
-class LuckyController extends Controller
+class HomeController extends Controller
 {
+
     /**
-     * @Route("/lucky", name="lucky_page")
+     * @Route("/", name="homepage")
      * @Template()
      */
-    public function luckyAction()
+    public function indexAction()
     {
-        $number = mt_rand(0, 100);
-
-        return new Response(
-            '<html><body>Lucky number: '.$number.'</body></html>'
-        );
+        return [];
     }
 }
