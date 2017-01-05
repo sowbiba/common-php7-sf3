@@ -1,7 +1,17 @@
 {% extends "AppBundle::layout.html.twig" %}
 
-{% block content %}
+{% block content_body %}
     <div id="fb-root"></div>
+
+    <p>
+        <a href="#" onclick="fb_login();">Facebook Connect Button (Dialog)</a>
+    </p>
+{% endblock content_body %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
     <script type="text/javascript">
         window.fbAsyncInit = function() {
             FB.init({
@@ -38,15 +48,4 @@
             });
         }
     </script>
-
-    <h1 class="title">Hello!</h1>
-
-    {#<a href="{{ path('_demo_secured_hello_admin', { 'name': name }) }}">Hello resource secured for <strong>admin</strong> only.</a>#}
-
-    <p>
-        <a href="#" onclick="fb_login();">Facebook Connect Button (Dialog)</a>
-    </p>
-
-    {# Bonus: Show all available login link in HWIOAuthBundle #}
-    {#{% render(controller('HWIOAuthBundle:Connect:connect')) %}#}
-{% endblock content %}
+{% endblock javascripts %}

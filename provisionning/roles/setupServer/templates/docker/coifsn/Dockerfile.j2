@@ -42,6 +42,9 @@ COPY container_config/authorized_keys {{ basepath }}/{{ docker_user }}/.ssh/auth
 COPY container_config/authorized_keys /root/.ssh/authorized_keys
 RUN chown {{ docker_user }}:{{ docker_user }} {{ basepath }}/{{ docker_user }}/.ssh/authorized_keys
 
+CMD cd /home/coifsn/workspace/coifsn/common-php7-sf3 && rm -rf var/cache/* && rm -rf var/logs/* && rm -rf var/sessions/* && setfacl -R -m u:www-data:rwX -m u:www-data:rwX var/cache && setfacl -R -m u:www-data:rwX -m u:www-data:rwX var/logs && setfacl -R -m u:www-data:rwX -m u:www-data:rwX var/sessions && chmod -R 777 var/cache && chmod -R 777 var/logs && chmod -R 777 var/sessions
+CMD ls -la /home/coifsn/workspace/coifsn/common-php7-sf3/var/
+
 # supervisor config
 COPY container_config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 

@@ -20,9 +20,9 @@
     - apt-transport-https
     - nginx
     - apparmor
-
-  - name: Add docker repository key
-    apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=36A1D7869245C8950F966E92D8576A8BA88D21E9 state=present
+#
+#  - name: Add docker repository key
+#    apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=36A1D7869245C8950F966E92D8576A8BA88D21E9 state=present
 
   - name: Add docker repository
     apt_repository: repo='deb https://get.docker.io/ubuntu docker main' state=present
@@ -37,11 +37,13 @@
     shell: grep devicemapper /etc/default/docker
     register: docker_grep
     ignore_errors: yes
+    sudo: true
 
   - name: Docker default options
     shell: sed -i 's/#DOCKER_OPTS=.*/DOCKER_OPTS="--storage-driver=devicemapper --storage-opt dm.override_udev_sync_check=true"/' /etc/default/docker
     # Only when the config file did not contain the devicemapper config => because restart the daemon stops all running containers !
     when: docker_grep.rc == 1
+    sudo: true
     notify:
       - restart docker
 
@@ -95,7 +97,7 @@
 
   - name: Run docker image
 #    docker: image="{{ ansible_ssh_user }}" ports={{ docker_web_port }}:80,{{ docker_ssh_port }}:22 volumes="{{ basepath }}/{{ ansible_ssh_user }}/medias_union:/home/profideo/medias:rw {{ basepath }}/{{ ansible_ssh_user }}/logs:/var/log/apache2:rw" hostname="{{ ansible_ssh_user }}" dns="192.168.0.50" state=running
-    shell: docker run {% for host in item.hosts %}--add-host {{ host }}:{{ ansible_eth0.ipv4.address }} {% endfor %} -v {{ basepath }}/{{ ansible_ssh_user }}/{{ workspacedir }}:{{ basepath }}/{{ docker_user }}/{{ workspacedir }}:rw -p {{ item.web_port }}:80 -p {{ item.ssh_port }}:22 -h {{ ansible_ssh_user }}_{{ item.image }} --name={{ ansible_ssh_user }}_{{ item.image }} -d {{ ansible_ssh_user }}_{{ item.image }}
+    shell: docker run {% for host in item.hosts %}--add-host {{ host }}:{{ ansible_wlan0.ipv4.address }} {% endfor %} -v {{ basepath }}/{{ ansible_ssh_user }}/{{ workspacedir }}:{{ basepath }}/{{ docker_user }}/{{ workspacedir }}:rw -p {{ item.web_port }}:80 -p {{ item.ssh_port }}:22 -h {{ ansible_ssh_user }}_{{ item.image }} --name={{ ansible_ssh_user }}_{{ item.image }} -d {{ ansible_ssh_user }}_{{ item.image }}
     #docker: image="{{ ansible_ssh_user }}_{{ item.image }}" name="{{ ansible_ssh_user }}_{{ item.image }}" ports={{ item.web_port }}:80,{{ item.ssh_port }}:22 volumes="{{ basepath }}/{{ ansible_ssh_user }}/{{ workspacedir }}:{{ basepath }}/{{ docker_user }}/{{ workspacedir }}:rw" hostname="{{ ansible_ssh_user }}_{{ item.image }}" state=running
     with_items: containers
 
@@ -125,9 +127,10 @@
     file: src=/etc/nginx/sites-available/{{ ansible_ssh_user }}_{{ item.image }} dest=/etc/nginx/sites-enabled/{{ ansible_ssh_user }}_{{ item.image }} owner=root group=root mode=0644 state=link
     sudo: true
     with_items: containers
-    notify:
-      - restart nginx
+#    notify:
+#      - restart nginx
 
   - name: create/fix directories
     file: path={{ basepath }}/{{ ansible_ssh_user }}/logs/ owner={{ ansible_ssh_user }} mode=0774 recurse=yes state=directory
+
 
