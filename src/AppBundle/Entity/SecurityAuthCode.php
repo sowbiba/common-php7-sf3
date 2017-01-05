@@ -20,18 +20,18 @@ class SecurityAuthCode extends BaseAuthCode
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="SecurityClient")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $client;
+    protected $client;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
      */
-    private $user;
+    protected $user;
 
 
     /**

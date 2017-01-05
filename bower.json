@@ -1,0 +1,17 @@
+{
+    "name": "Portail PSY Senegal",
+    "version": "0.1.0",
+    "description": "Portail PSY Senegal",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "app/Resources/lib"
+    ],
+    "dependencies": {
+        "bootstrap": "3.3.5",
+        "jquery": "1.11.3",
+        "jquery-ui" : "1.11.4",
+        "fontawesome": "4.3.0"
+    }
+}

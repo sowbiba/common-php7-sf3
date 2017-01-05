@@ -30,6 +30,7 @@
 # Assets and user uploads
 /web/bundles/
 /web/uploads/
+/web/fonts/
 
 # Assets managed by Bower
 /web/assets/vendor/
@@ -46,3 +47,17 @@
 
 # Backup entities generated with doctrine:generate:entities command
 */Entity/*~
+
+# Node
+/node_modules/
+/node_modules/*
+
+# Grunt
+/web/.tmp/
+/web/js/vendor/
+/web/js/app/
+/web/css/vendor/
+/web/css/app/
+
+# JS libs
+/app/Resources/lib/*
