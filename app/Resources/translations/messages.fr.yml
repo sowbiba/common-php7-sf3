@@ -1,0 +1,5 @@
+web.view.index.send.html.email.to: "Envoyer un mail à"
+web.view.index.use.custom.email: "Réinitialiser (mail de l'utilisateur)"
+web.view.index.paste.email.source.here: "Coller la source du mail"
+web.view.index.check.spam.score: "Vérifier le niveau de spam"
+web.view.index.spam.score.result: "Résultat du niveau de spam"
