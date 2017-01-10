@@ -22,6 +22,10 @@ class HomeController extends Controller
      */
     public function indexAction()
     {
+//        $provider = $this->get('fos_message.provider');
+//
+//        $threads = $provider->getInboxThreads();
+
         return [];
     }
 }

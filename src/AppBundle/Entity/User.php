@@ -21,70 +21,70 @@ class User extends BaseUser implements ParticipantInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255)
      */
-    private $firstname;
+    protected $firstname;
 
     /**
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=255)
      */
-    private $lastname;
+    protected $lastname;
 
     /**
      * @var string
      *
      * @ORM\Column(name="address", type="string", length=255)
      */
-    private $address;
+    protected $address;
 
     /**
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=150, unique=true)
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
      *
      * @ORM\Column(name="login", type="string", length=100, unique=true)
      */
-    private $login;
+    protected $login;
 
     /**
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255)
      */
-    private $password;
+    protected $password;
 
     /**
      * @var int
      *
      * @ORM\Column(name="user_group_id", type="integer")
      */
-    private $userGroupId;
+    protected $userGroupId;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updatedAt;
+    protected $updatedAt;
 
 
     /**
