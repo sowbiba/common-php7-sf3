@@ -102,6 +102,9 @@ fos_comment:
         model:
             comment: AppBundle\Entity\Comment
             thread: AppBundle\Entity\Thread
+    form:
+      comment:
+        type: app_comment
 
 #assetic:
 #    bundles: [ "FOSCommentBundle" ]
