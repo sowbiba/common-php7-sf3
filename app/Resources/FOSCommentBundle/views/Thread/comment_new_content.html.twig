@@ -17,7 +17,7 @@
 {% endif %}
 
 {% block fos_comment_comment_form_holder %}
-    <div class="fos_comment_comment_form_holder">
+    <div class="fos_comment_comment_form_holder margin-bottom-80">
         {% block fos_comment_form_title %}
             {% if first %}
                 <h3>{% trans from 'FOSCommentBundle' %}fos_comment_comment_new_headline_first{% endtrans %}</h3>
@@ -41,7 +41,7 @@
                     {{ form_rest(form) }}
                 {% endblock %}
 
-                <div class="fos_comment_submit">
+                <div class="fos_comment_submit pull-right margin-top-10">
                     {% block fos_comment_form_submit %}
                         {% if parent is not null %}
                             <input type="button" class="btn btn-primary" value="{% trans from 'FOSCommentBundle' %}fos_comment_comment_reply_cancel{% endtrans %}" class="fos_comment_comment_reply_cancel" />
