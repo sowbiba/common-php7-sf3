@@ -51,6 +51,13 @@ class Thread extends BaseThread implements ThreadInterface
     protected $commentable;
 
     /**
+     * Denormalized number of comments
+     *
+     * @var integer
+     */
+    protected $numComments = 0;
+
+    /**
      * @param string
      */
     public function setId($id)
@@ -107,7 +114,7 @@ class Thread extends BaseThread implements ThreadInterface
      */
     public function getNumComments()
     {
-        // TODO: Implement getNumComments() method.
+        return $this->numComments;
     }
 
     /**
@@ -117,19 +124,19 @@ class Thread extends BaseThread implements ThreadInterface
      */
     public function setNumComments($numComments)
     {
-        // TODO: Implement setNumComments() method.
+        $this->numComments = intval($numComments);
     }
 
     /**
      * Increments the number of comments by the supplied
      * value.
      *
-     * @param  integer $by The number of comments to increment by
+     * @param  integer $by Value to increment comments by
      * @return integer The new comment total
      */
-    public function incrementNumComments($by)
+    public function incrementNumComments($by = 1)
     {
-        // TODO: Implement incrementNumComments() method.
+        return $this->numComments += intval($by);
     }
 
     /**
